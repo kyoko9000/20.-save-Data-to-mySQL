@@ -1,12 +1,13 @@
 #no need to install anything
 import sys
 # pip install pyqt6
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 # just change the name
 from gui import Ui_MainWindow
 
 # pip install mysql.connector-python
 import mysql.connector
+
 
 class MainWindow:
     def __init__(self):
@@ -100,10 +101,10 @@ class MainWindow:
         except:
             print("no data")
 
-
     def show(self):
         # command to run
         self.main_win.show()
+
 
 if __name__ == "__main__":
     # run app
