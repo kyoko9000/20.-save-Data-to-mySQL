@@ -1,10 +1,13 @@
 # ************************** man hinh loai 2 *************************
 import sqlite3
 import sys
+from datetime import datetime
 
 import openpyxl
 # pip install pyqt5
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
+from openpyxl.styles import NamedStyle
+
 from gui1 import Ui_MainWindow
 
 
@@ -33,7 +36,7 @@ class MainWindow(QMainWindow):
         # Tạo QTableWidget và điền dữ liệu
         self.uic.tableWidget.setRowCount(len(data))
         self.uic.tableWidget.setColumnCount(5)  # Số cột của bảng HocSinh
-        self.header_list = ['Mã Số', 'Tên Học Sinh', 'Ngày Tháng Năm Sinh', 'Tuổi', 'GhiChu']
+        self.header_list = ['Mã Số', 'Tên Học Sinh', 'Ngày Sinh', 'Tuổi', 'GhiChu']
         self.uic.tableWidget.setHorizontalHeaderLabels(self.header_list)
 
         for row_idx, row_data in enumerate(data):
@@ -65,9 +68,9 @@ class MainWindow(QMainWindow):
         cursor = conn.cursor()
         cursor.execute(f"UPDATE HocSinh SET {column_name} = ? WHERE MaSo = ?", (value, maso))
         print(f"thông tin dã được lưu trữ vào database với:\n"
-              f"       mã số: {maso}\n"
-              f",column name: {column_name}\n"
-              f",    giá trị: {value}")
+              f"      mã số: {maso}\n"
+              f"column name: {column_name}\n"
+              f"    giá trị: {value}")
         conn.commit()
         conn.close()
 
@@ -88,21 +91,31 @@ class MainWindow(QMainWindow):
             print("Không có ô nào được chọn")
 
     def export_to_excel(self, data):
-        # Chuyển đổi giá trị tại vị trí 0 và 3 ra dạng int
+        # chuyển ô tuổi về dạng số:
         data[1][3] = int(data[1][3])
+
+        # Chuyển đổi giá trị ngày tháng dạng text ra dạng ngày tháng
+        date_of_birth = datetime.strptime(data[1][2], '%d/%m/%Y').date()
+
+        # ghi ngày tháng đã chuyển đổi về lại data
+        data[1][2] = date_of_birth
         print("data", data)
 
-        # # Lưu dữ liệu vào worksheet
-        # file_path = 'export_data.xlsx'
-        # workbook = openpyxl.Workbook()
-        # sheet = workbook.active
-        # for row in data:
-        #     sheet.append(row)
-        #
-        # # Lưu workbook vào tệp Excel
-        # workbook.save(file_path)
-        #
-        # print("Dữ liệu đã được lưu thành công vào tệp Excel.")
+        # Lưu dữ liệu vào worksheet
+        file_path = 'export_data.xlsx'
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+        for row in data:
+            sheet.append(row)
+
+        # Định dạng ô C2 (Ngày tháng năm sinh) để chỉ hiển thị ngày
+        date_style = NamedStyle(name="datetime", number_format="DD/MM/YYYY")
+        sheet['C2'].style = date_style
+
+        # Lưu workbook vào tệp Excel
+        workbook.save(file_path)
+
+        print("Dữ liệu đã được lưu thành công vào tệp Excel.")
 
 
 if __name__ == "__main__":
