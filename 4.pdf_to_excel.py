@@ -1,47 +1,47 @@
-# import pdfplumber
-#
-# # Mở file PDF
-# with pdfplumber.open('danhsach.pdf') as pdf:
-#     for page in pdf.pages:
-#         # nếu cần toàn bộ dữ liệu
-#         text = page.extract_text()
-#         print(text)
-#
-#         # Nếu cần xử lý các bảng
-#         # tables = page.extract_tables()
-#         # print(tables)
-
-# -------------------chỉ ghi bảng dữ liệu-------------------
 import pdfplumber
-import openpyxl
 
 # Mở file PDF
 with pdfplumber.open('danhsach.pdf') as pdf:
-    # Tạo workbook và worksheet mới
-    wb = openpyxl.Workbook()
-    ws = wb.active
-
     for page in pdf.pages:
-        # Trích xuất các bảng từ trang
-        tables = page.extract_tables()
+        # nếu cần toàn bộ dữ liệu
+        text = page.extract_text()
+        print(text)
+
+        # Nếu cần xử lý các bảng
+        # tables = page.extract_tables()
         # print(tables)
-        list = tables[0]
 
-        # Chuyển đổi tất cả các số thành số nguyên
-        for row in list[1:]:  # Bỏ qua hàng tiêu đề đầu tiên
-            for i in range(len(row)):
-                try:
-                    row[i] = int(row[i])
-                except ValueError:
-                    pass  # Nếu không thể chuyển đổi thì bỏ qua
-
-        print(list)
-
-        for row in list:
-            ws.append(row)
-
-# Lưu file Excel
-wb.save('hoc_sinh.xlsx')
+# -------------------chỉ ghi bảng dữ liệu-------------------
+# import pdfplumber
+# import openpyxl
+#
+# # Mở file PDF
+# with pdfplumber.open('danhsach.pdf') as pdf:
+#     # Tạo workbook và worksheet mới
+#     wb = openpyxl.Workbook()
+#     ws = wb.active
+#
+#     for page in pdf.pages:
+#         # Trích xuất các bảng từ trang
+#         tables = page.extract_tables()
+#         # print(tables)
+#         list = tables[0]
+#
+#         # Chuyển đổi tất cả các số thành số nguyên
+#         for row in list[1:]:  # Bỏ qua hàng tiêu đề đầu tiên
+#             for i in range(len(row)):
+#                 try:
+#                     row[i] = int(row[i])
+#                 except ValueError:
+#                     pass  # Nếu không thể chuyển đổi thì bỏ qua
+#
+#         print(list)
+#
+#         for row in list:
+#             ws.append(row)
+#
+# # Lưu file Excel
+# wb.save('hoc_sinh.xlsx')
 
 # ------------------ghi luôn dòng tiêu đề và có chỉnh sửa---------------
 # import pdfplumber
